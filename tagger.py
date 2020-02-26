@@ -1,6 +1,12 @@
 import sys, re, os, random
 
 
+def format(text):
+    text = re.sub(r'[\[\]]', '', text)
+    text = re.sub(r'[\n]', ' ', text)
+    text = ' '.join(text.split())
+    return text
+
 ##########################################################PROGRAM START###################################################################
 
 pythonFileName = sys.argv.pop(0)
@@ -10,7 +16,7 @@ trainText = ''
 testText = ''
 
 #TESTING
-print(pythonFileName, trainText, testText)
+#print(pythonFileName, trainText, testText)
 
 
 with open(trainFile, 'r+') as f:
@@ -18,9 +24,12 @@ with open(trainFile, 'r+') as f:
     for line in f:
         lines.append(line.strip())
     trainText = ' '.join(lines)
+
+trainText = format(trainText)
 #TESTING
-#print(trainText)
+print(trainText)
 #print(type(trainText))
+
 
 
 with open(testFile, 'r+') as f:
