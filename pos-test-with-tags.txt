@@ -1,0 +1,1 @@
+tagger.py pos-train.txt pos-test.txt
