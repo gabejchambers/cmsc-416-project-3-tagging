@@ -7,6 +7,42 @@ def format(text):
     text = ' '.join(text.split())
     return text
 
+
+#creates: [[word, POS],
+#          [word, POS],...]
+def toWordList(text):
+    text = re.sub(r'\\\/', r'\\', text)#to allow splitting at /
+    pairs = text.split()
+    dpairs = []
+    for pair in pairs:
+        dpairs.append(pair.split('/'))
+    #to put back \/ for consistency with prof expected op:
+    for pair in dpairs:
+        for itm in pair:
+            itm = re.sub(r'\\', r'\\\/', itm)   
+    return dpairs
+
+
+def createFreqency(pairs):
+    table = {}
+    for pair in pairs:
+        word = pair[0]
+        tag = pair[1]
+        if word in table:
+            if tag in table[word]:
+                table[word][tag] += 1
+            else:
+                table[word][tag] = 1
+        else:
+            table[word] = {tag: 1}
+    return table
+
+
+def createGuide(table):
+    guide = {}
+    return guide
+
+
 ##########################################################PROGRAM START###################################################################
 
 pythonFileName = sys.argv.pop(0)
@@ -25,10 +61,15 @@ with open(trainFile, 'r+') as f:
         lines.append(line.strip())
     trainText = ' '.join(lines)
 
-trainText = format(trainText)
+
+trainFreq = createFreqency(toWordList(format(trainText)))
+
+
 #TESTING
-print(trainText)
+#print(trainText)
 #print(type(trainText))
+#print(toWordList(trainText))
+print(trainFreq)
 
 
 
