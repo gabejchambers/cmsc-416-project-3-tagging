@@ -40,6 +40,12 @@ def createFreqency(pairs):
 
 def createGuide(table):
     guide = {}
+    for word, tags in table.items():
+        max = ''
+        for tag, occurs in tags.items():
+            if occurs > tags.get(max, 0):
+                max = tag
+        guide[word] = max
     return guide
 
 
@@ -62,15 +68,14 @@ with open(trainFile, 'r+') as f:
     trainText = ' '.join(lines)
 
 
-trainFreq = createFreqency(toWordList(format(trainText)))
+guide = createGuide(createFreqency(toWordList(format(trainText))))
 
 
 #TESTING
 #print(trainText)
 #print(type(trainText))
 #print(toWordList(trainText))
-print(trainFreq)
-
+print(guide)
 
 
 with open(testFile, 'r+') as f:
