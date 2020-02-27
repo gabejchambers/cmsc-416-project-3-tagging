@@ -66,6 +66,19 @@ def singleFreq(tripls, index):
     return sfreq
 
 
+def doubleFreq(tripls, leftIndex):
+    dfreq = {}
+    for tripl in tripls:
+        left = tripl[leftIndex]
+        tag = tripl[2]
+        Key = (left, tag)
+        if Key in dfreq:
+            dfreq[Key] += 1
+        else:
+            dfreq[Key] = 1
+    return dfreq
+
+
 def createGuide(table):
     guide = {}
     for word, tags in table.items():
@@ -99,13 +112,14 @@ with open(trainFile, 'r+') as f:
 tripls = toWordList(format(trainText))
 freqWord = singleFreq(tripls, 1)
 freqTag = singleFreq(tripls, 2)
+freqWordTag = doubleFreq(tripls, 1)
+freqTagm1Tag = doubleFreq(tripls, 0)
 
 #dont delete until you have whole correction done so you can see proper order
 #guide = createGuide(createFreqency(toWordList(format(trainText))))
 
-####################################FUCK, NEED TO MAKE WHOLE THING BIGRAM MODEL. FUCK
 
-#TESTING
+###########TESTING#############
 #print(trainText)
 #print(type(trainText))
 #print(toWordList(trainText))
@@ -113,6 +127,8 @@ freqTag = singleFreq(tripls, 2)
 #print(tripls)
 #print(freqTag)
 #print(freqWord)
+#print(freqTagm1Tag)
+#print(freqWordTag)
 
 
 with open(testFile, 'r+') as f:
