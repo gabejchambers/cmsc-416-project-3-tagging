@@ -8,26 +8,19 @@ def format(text):
     return text
 
 
-#creates: [[word, POS],
-#          [word, POS],...]
-#
-#now need: [[prevPOS, word, POS],
+#creates: [[prevPOS, word, POS],
 #          [prevPOS, word, POS],...]
-#
-#rem after .,!,? prevPOS is <START> not the actual tag
 def toWordList(text):
     text = re.sub(r'\\\/', r'\\', text)#to allow splitting at /
     pairs = text.split()
     dpairs = []
-    start = '<START>'
-    POSm1 = start
+    POSm1 = '<START>'
     for pair in pairs:
-        wordPOS = pair.split('/')
-        wordPOS.insert(0, POSm1)
-        POSwordPOS = wordPOS
+        POSwordPOS = pair.split('/')
+        POSwordPOS.insert(0, POSm1)
         dpairs.append(POSwordPOS)
         if POSwordPOS[2] == '.' or POSwordPOS[2] == '?' or POSwordPOS[2] == '!':
-            POSm1 = start
+            POSm1 = '<START>'
         else:
             POSm1 = POSwordPOS[2]
     #to put back \/ for consistency with prof expected op:
