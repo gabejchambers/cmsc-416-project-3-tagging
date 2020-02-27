@@ -30,7 +30,7 @@ def toWordList(text):
     for pair in dpairs:
         for itm in pair:
             itm = re.sub(r'\\', r'\\\/', itm)   
-    return dpairs
+    return dpairs    
 
 
 def testWordList(wordList):
@@ -107,6 +107,51 @@ def createGuide(table):
     return guide
 
 
+def testTriples(testLst):
+    prevpos = '<START>'
+    pos = ''
+    testtriples = []
+    for trip in testLst:
+        storetrip = trip
+        #set tag-1 if it isnt already a start tag
+        if storetrip[0] != '<START>':
+            storetrip.insert(0,pos)
+            prevpos = pos
+        else:
+            prevpos = '<START>'
+        max = 0
+        pos = ''
+        for wordPOS, wfreq in freqWordTag.items():
+            for tagm1tag, tfreq in freqTagm1Tag.items():
+                if wordPOS[0] == storetrip[1] and wordPOS[1] == tagm1tag[1] and tagm1tag[0] == prevpos:
+                    prob = wordtagP(storetrip[1], wfreq)*tagm1tagP(tagm1tag[0], tfreq)
+                    if prob >= max:
+                        max = prob
+                        pos = wordPOS[1]
+        storetrip.append(pos)
+        testtriples.append(storetrip)
+        #print(testtriples)
+    return testtriples
+
+
+def wordtagP(word, wtfreq):
+    return wtfreq/freqWord.get(word)
+
+
+def tagm1tagP(tagm1,ttfreq):
+    return ttfreq/freqTag.get(tagm1)
+
+
+def allTagsPerWord(freqWordTag):
+    validTags = {}
+    for wordPOS, wfreq in freqWordTag.items():
+        if wordPOS[0] in validTags:
+            validTags[wordPOS[0]].append(wordPOS[1])
+        else:
+            validTags[wordPOS[0]] = [wordPOS[1]]
+    return validTags
+
+
 ##########################################################PROGRAM START###################################################################
 
 pythonFileName = sys.argv.pop(0)
@@ -126,11 +171,12 @@ with open(trainFile, 'r+') as f:
     trainText = ' '.join(lines)
 
 
-tripls = toWordList(format(trainText))
-freqWord = singleFreq(tripls, 1)
-freqTag = singleFreq(tripls, 2)
-freqWordTag = doubleFreq(tripls, 1)
-freqTagm1Tag = doubleFreq(tripls, 0)
+trips = toWordList(format(trainText))
+freqWord = singleFreq(trips, 1)
+freqTag = singleFreq(trips, 2)
+freqWordTag = doubleFreq(trips, 1)
+freqTagm1Tag = doubleFreq(trips, 0)
+validTagsPerWord = allTagsPerWord(freqWordTag)
 
 #dont delete until you have whole correction done so you can see proper order
 #guide = createGuide(createFreqency(toWordList(format(trainText))))
@@ -141,11 +187,12 @@ freqTagm1Tag = doubleFreq(tripls, 0)
 #print(type(trainText))
 #print(toWordList(trainText))
 #print(guide)
-#print(tripls)
+#print(trips)
 #print(freqTag)
 #print(freqWord)
 #print(freqTagm1Tag)
 #print(freqWordTag)
+#print(validTagsPerWord)
 
 
 with open(testFile, 'r+') as f:
@@ -155,10 +202,11 @@ with open(testFile, 'r+') as f:
     testText = ' '.join(lines)
 
 
-testText = format(testText)
-wordList = testWordList(testText.split())
+testwordList = testWordList(format(testText).split())
+#testtrips = testTriples(testwordList)
 
 ###########TESTING#############
 #print(testText)
 #print(wordList)
-print(wordList)
+#print(testwordList)
+#print(testtrips)
