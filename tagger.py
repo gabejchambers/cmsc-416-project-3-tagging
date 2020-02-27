@@ -45,6 +45,27 @@ def createFreqency(pairs):
     return table
 
 
+
+def singleFreq(tripls, index):
+    sfreq = {}
+    #add start tag for beginning of text if we are doing tags.
+    if index == 2:
+        sfreq['<START>'] = 1
+    for tripl in tripls:
+        Key = tripl[index]
+        if Key in sfreq:
+            sfreq[Key] += 1
+        else:
+            sfreq[Key] = 1
+        #add <start> tag if end of a sentence and we are doing tags
+        if index == 2 and (Key == '.' or Key == '!' or Key == '?'):
+            sfreq['<START>'] += 1
+    #this deletes one <start> tag, in the case that the entire text ends in a punctuation, because there is not another sentence to start:
+    if index == 2 and (tripls[-1][-1] == '.' or tripls[-1][-1] == '!' or tripls[-1][-1] == '?'):
+        sfreq['<START>'] -= 1
+    return sfreq
+
+
 def createGuide(table):
     guide = {}
     for word, tags in table.items():
@@ -75,8 +96,9 @@ with open(trainFile, 'r+') as f:
     trainText = ' '.join(lines)
 
 
-sets = toWordList(format(trainText))
-
+tripls = toWordList(format(trainText))
+freqWord = singleFreq(tripls, 1)
+freqTag = singleFreq(tripls, 2)
 
 #dont delete until you have whole correction done so you can see proper order
 #guide = createGuide(createFreqency(toWordList(format(trainText))))
@@ -88,7 +110,9 @@ sets = toWordList(format(trainText))
 #print(type(trainText))
 #print(toWordList(trainText))
 #print(guide)
-print(sets)
+#print(tripls)
+#print(freqTag)
+#print(freqWord)
 
 
 with open(testFile, 'r+') as f:
