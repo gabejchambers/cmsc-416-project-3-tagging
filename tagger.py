@@ -2,8 +2,11 @@ import sys, re, os, random
 
 
 def format(text):
+    #delete brackets [ ]
     text = re.sub(r'[\[\]]', '', text)
+    #replace newlines with spaces
     text = re.sub(r'[\n]', ' ', text)
+    #use split and join to reduce all amounts of whitespace to a single space
     text = ' '.join(text.split())
     return text
 
@@ -28,6 +31,20 @@ def toWordList(text):
         for itm in pair:
             itm = re.sub(r'\\', r'\\\/', itm)   
     return dpairs
+
+
+def testWordList(wordList):
+    dList = []
+    start = True
+    for word in wordList:
+        wordasL = [word]
+        if start:
+            wordasL.insert(0, '<START>')
+            start = False
+        if wordasL[0] == '.' or wordasL[0] == '?' or wordasL[0] == '!':
+            start = True
+        dList.append(wordasL)
+    return dList
 
 
 def createFreqency(pairs):
@@ -136,5 +153,12 @@ with open(testFile, 'r+') as f:
     for line in f:
         lines.append(line.strip())
     testText = ' '.join(lines)
-#TESTING
+
+
+testText = format(testText)
+wordList = testWordList(testText.split())
+
+###########TESTING#############
 #print(testText)
+#print(wordList)
+print(wordList)
