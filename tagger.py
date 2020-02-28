@@ -121,25 +121,37 @@ def testTriples(testLst):
             prevpos = '<START>'
         max = 0
         pos = ''
-        for wordPOS, wfreq in freqWordTag.items():
-            for tagm1tag, tfreq in freqTagm1Tag.items():
-                if wordPOS[0] == storetrip[1] and wordPOS[1] == tagm1tag[1] and tagm1tag[0] == prevpos:
-                    prob = wordtagP(storetrip[1], wfreq)*tagm1tagP(tagm1tag[0], tfreq)
-                    if prob >= max:
-                        max = prob
-                        pos = wordPOS[1]
+        if storetrip[1] in validTagsPerWord:
+            for tag in validTagsPerWord.get(storetrip[1]):
+                prob = wordtagP(storetrip[1], tag)*tagm1tagP(storetrip[0], tag)
+                if prob >= max:
+                    max = prob
+                    pos = tag
+        else:
+            pos = 'NN'
         storetrip.append(pos)
         testtriples.append(storetrip)
-        #print(testtriples)
     return testtriples
 
 
-def wordtagP(word, wtfreq):
-    return wtfreq/freqWord.get(word)
+def wordtagP(word, tag):
+    if (word, tag) not in freqWordTag:
+        print('w1')
+        return 0
+    num = freqWordTag.get((word, tag))
+    denom = freqWord.get(word)
+    #print('w2')
+    return num/denom
 
 
-def tagm1tagP(tagm1,ttfreq):
-    return ttfreq/freqTag.get(tagm1)
+def tagm1tagP(tagm1,tag):
+    if (tagm1, tag) not in freqTagm1Tag:
+        #print('a1')
+        return 0
+    num = freqTagm1Tag.get((tagm1, tag))
+    denom = freqTag.get(tagm1)
+    #print('a2')
+    return num/denom
 
 
 def allTagsPerWord(freqWordTag):
@@ -151,6 +163,12 @@ def allTagsPerWord(freqWordTag):
             validTags[wordPOS[0]] = [wordPOS[1]]
     return validTags
 
+
+def makePretty(trips):
+    words = []
+    for trip in trips:
+        words.append(trip[1] + '/' + trip[2])
+    return ' '.join(words)
 
 ##########################################################PROGRAM START###################################################################
 
@@ -202,11 +220,13 @@ with open(testFile, 'r+') as f:
     testText = ' '.join(lines)
 
 
-testwordList = testWordList(format(testText).split())
-#testtrips = testTriples(testwordList)
+testtrips = testTriples(testWordList(format(testText).split()))
+pretty = makePretty(testtrips)
+
 
 ###########TESTING#############
 #print(testText)
 #print(wordList)
 #print(testwordList)
 #print(testtrips)
+print(pretty)
