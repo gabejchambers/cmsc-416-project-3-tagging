@@ -217,8 +217,7 @@ with open(testFile, 'r+') as f:
     testText = ' '.join(lines)
 
 
-testtrips = testTriples(testWordList(format(testText).split()))
-pretty = makePretty(testtrips)
+pretty = makePretty(testTriples(testWordList(format(testText).split())))
 
 
 ###########TESTING#############
