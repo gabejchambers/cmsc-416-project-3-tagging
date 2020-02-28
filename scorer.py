@@ -20,29 +20,6 @@ def format(text):
     return text
 
 
-#works now in scorer.py, but unoptomized
-#creates: [[prevPOS, word, POS],
-#          [prevPOS, word, POS],...]
-def oldtoWordList(text):
-    text = re.sub(r'\\\/', r'\\', text)#to allow splitting at /
-    pairs = text.split()
-    dpairs = []
-    POSm1 = '<START>'
-    for pair in pairs:
-        POSwordPOS = pair.split('/')
-        POSwordPOS.insert(0, POSm1)
-        dpairs.append(POSwordPOS[2])
-        if POSwordPOS[2] == '.' or POSwordPOS[2] == '?' or POSwordPOS[2] == '!':
-            POSm1 = '<START>'
-        else:
-            POSm1 = POSwordPOS[2]
-    #to put back \/ for consistency with prof expected op:
-    for pair in dpairs:
-        for itm in pair:
-            itm = re.sub(r'\\', r'\\\/', itm)   
-    return dpairs    
-
-
 def toWordList(text):
     text = re.sub(r'\\\/', r'\\', text)#to allow splitting at /
     pairs = text.split()
@@ -53,6 +30,37 @@ def toWordList(text):
     return POSlist
     
 
+def compare(actual, expected):
+    same = 0
+    total = 0
+    for index in range(len(actual)):
+        total += 1
+        if actual[index] == expected[index]:
+            same+=1
+    return same/total
+
+
+def buildMatrix(actual, expected, matrix):
+    for index in range(len(actual)):
+        matrix[actual[index]][expected[index]] += 1
+    return matrix
+
+
+def initializeMatrix(actual, expected):
+    matrix = {}
+    expectset = set()
+    for pos in actual:
+        if pos not in matrix:
+            matrix[pos] = {}
+    for pos in expected:
+        if pos not in expectset:
+            expectset.add(pos)
+    for actlpos, expectdict in matrix.items():
+        for expectpos in expectset:
+            if expectpos not in expectdict:
+                expectdict[expectpos] = 0
+    return matrix
+
 #####################START PROGRAM#####################
 
 pythonFileName = sys.argv.pop(0)
@@ -62,6 +70,14 @@ testKeyFile = sys.argv.pop(0)
 
 mySolution = toWordList(readIn(mySolutionFile))
 testKey = toWordList(format(readIn(testKeyFile)))
+emptyMatrix = initializeMatrix(mySolution, testKey)
+finalAccuracy = compare(mySolution, testKey)
+cMatrix = buildMatrix(mySolution, testKey, emptyMatrix)
 
-print(testKey)
+
+#print(mySolution)
+print(finalAccuracy)
+#print(emptyMatrix)
+print(cMatrix)
+
 
