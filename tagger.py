@@ -196,9 +196,6 @@ freqWordTag = doubleFreq(trips, 1)
 freqTagm1Tag = doubleFreq(trips, 0)
 validTagsPerWord = allTagsPerWord(freqWordTag)
 
-#dont delete until you have whole correction done so you can see proper order
-#guide = createGuide(createFreqency(toWordList(format(trainText))))
-
 
 ###########TESTING#############
 #print(trainText)
