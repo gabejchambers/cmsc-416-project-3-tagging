@@ -26,6 +26,8 @@ def toWordList(text):
     POSlist = []
     for pair in pairs:
         wordPOS = pair.split('/')
+        temp = wordPOS[1].split('|')
+        wordPOS[1] = temp[-1]
         POSlist.append(wordPOS[1])
     return POSlist
     

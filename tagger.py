@@ -21,6 +21,8 @@ def toWordList(text):
     for pair in pairs:
         POSwordPOS = pair.split('/')
         POSwordPOS.insert(0, POSm1)
+        temp = POSwordPOS[2].split('|')
+        POSwordPOS[2] = temp[-1]
         dpairs.append(POSwordPOS)
         if POSwordPOS[2] == '.' or POSwordPOS[2] == '?' or POSwordPOS[2] == '!':
             POSm1 = '<START>'
