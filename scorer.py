@@ -63,6 +63,17 @@ def initializeMatrix(actual, expected):
                 expectdict[expectpos] = 0
     return matrix
 
+
+def printPretty(matrix):
+    print('Confusion Matrix, where left value is the calculated, experimental and the inner values are the pos-test-key.txt values.')
+    print('For example:')
+    print("        DT: {'WP': 0, 'NNS': 4, DT: 1776}")
+    print('Can be read as: What the program thought was a DT was correctly tagged as a DT, 1776 times, but 4 times it was actually supposed to be an NNS', end='\n\n')
+    for actualpos, expecteddict in matrix.items():
+        print(actualpos, end=': ')
+        print(expecteddict)
+    return
+
 #####################START PROGRAM#####################
 
 pythonFileName = sys.argv.pop(0)
@@ -73,13 +84,13 @@ testKeyFile = sys.argv.pop(0)
 mySolution = toWordList(readIn(mySolutionFile))
 testKey = toWordList(format(readIn(testKeyFile)))
 emptyMatrix = initializeMatrix(mySolution, testKey)
-finalAccuracy = compare(mySolution, testKey)
-cMatrix = buildMatrix(mySolution, testKey, emptyMatrix)
+print('Accuracy:', compare(mySolution, testKey), end='\n\n\n')
+printPretty(buildMatrix(mySolution, testKey, emptyMatrix))
 
 
 #print(mySolution)
-print(finalAccuracy)
+#print(finalAccuracy)
 #print(emptyMatrix)
-print(cMatrix)
+#print(cMatrix)
 
 
